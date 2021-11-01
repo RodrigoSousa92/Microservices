@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  mysql:
+    hostname: mysql
+    image: 'mysql:latest'
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+      MYSQL_ROOT_PASSWORD: Terceira92!
+      MYSQL_DATABASE: Microservice1
+  microservice1:
+    image: microservice1
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/microservice1
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+      MICROSERVICE1_MICROSERVICE2_WEATHER_PROVIDER_URL: http://microservice2:8080/weather
+    depends_on:
+      - mysql
+  mongo:
+    image: mongo
+    ports:
+        - "27018:27017"
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: microservice2
+        MONGO_INITDB_ROOT_PASSWORD: abcd124
+  microservice:
+        image: microservice2
+    ports:
+        - "8081:8080"
+   restart: always
+   environment:
+          SPRING_DATA_MONGODB_URI: mongodb+srv://Rodrigo:abcd1234@cluster0.rjblf.mongodb.net/test
+          WEATHER_API_URL: https://api.weatherapi.com/v1/current.json
+          WEATHER_API_KEY: 498b7e2ad0564d6e82a171141212810
+
+
